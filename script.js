@@ -10,6 +10,7 @@ let userText = "";
 let errorCount = 0;
 let startTime;
 let questionText = "";
+let gameOverStatus = false;
 
 // Load and display question
 fetch("./texts.json")
@@ -51,6 +52,7 @@ const typeController = (e) => {
   // check if given question text is equal to user typed text
   if (questionText === userText) {
     gameOver();
+    gameOverStatus = true;
   }
 };
 
@@ -119,6 +121,8 @@ const start = () => {
 
       clearInterval(startCountdown);
       startTime = new Date().getTime();
+      count = 3
+      typingTime()
     }
     count--;
   }, 1000);
@@ -131,10 +135,17 @@ startBtn.addEventListener("click", start);
 displayHistory();
 
 // Show typing time spent
-setInterval(() => {
+const typingTime = () => { 
+  const typingTime  = setInterval(() => {
   const currentTime = new Date().getTime();
   const timeSpent = parseInt((currentTime - startTime) / 1000);
 
 
   document.getElementById("show-time").innerHTML = `${startTime ? timeSpent : 0} seconds`;
+
+  if(gameOverStatus) {
+    clearInterval(typingTime)
+    gameOverStatus = false
+  }
 }, 1000);
+}
