@@ -11,6 +11,7 @@ let errorCount = 0;
 let startTime;
 let questionText = "";
 let gameOverStatus = false;
+let count = 3;
 
 // Load and display question
 fetch("./texts.json")
@@ -54,6 +55,7 @@ const typeController = (e) => {
   if (questionText === userText) {
     gameOver();
     gameOverStatus = true;
+    // count = 3;
   }
 };
 
@@ -103,14 +105,14 @@ const closeModal = () => {
 };
 
 const start = () => {
+  count = 3
   // If already started, do not start again
   if (startTime) return;
 
-  let count = 3;
   countdownOverlay.style.display = "flex";
 
   const startCountdown = setInterval(() => {
-    countdownOverlay.innerHTML = `<h1>${count}</h1>`;
+    countdownOverlay.innerHTML = `${count ? `<h1>${count}</h1>` : ''}`;
 
     // finished timer
     if (count == 0) {
@@ -122,7 +124,7 @@ const start = () => {
 
       clearInterval(startCountdown);
       startTime = new Date().getTime();
-      count = 3
+      
       typingTime()
     }
     count--;
@@ -150,3 +152,9 @@ const typingTime = () => {
   }
 }, 1000);
 }
+
+
+// prevent spacebar scrolling
+window.onkeydown = function(e) { 
+  return !(e.keyCode == 32 && e.target == document.body);
+}; 
