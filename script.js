@@ -14,12 +14,17 @@ let gameOverStatus = false;
 let count = 3;
 
 // Load and display question
-fetch("./texts.json")
-  .then((res) => res.json())
-  .then((data) => {
-    questionText = data[Math.floor(Math.random() * data.length)];
-    question.innerHTML = questionText;
-  });
+const loadData = () => {
+  fetch("./texts.json")
+    .then((res) => res.json())
+    .then((data) => {
+      questionText = data[Math.floor(Math.random() * data.length)];
+      question.innerHTML = questionText;
+    });
+};
+
+// initial load
+loadData();
 
 // checks the user typed character and displays accordingly
 const typeController = (e) => {
@@ -45,9 +50,13 @@ const typeController = (e) => {
   const newLetterCorrect = validate(newLetter);
 
   if (newLetterCorrect) {
-    display.innerHTML += `<span class="green">${newLetter === " " ? "▪" : newLetter}</span>`;
+    display.innerHTML += `<span class="green">${
+      newLetter === " " ? "▪" : newLetter
+    }</span>`;
   } else {
-    display.innerHTML += `<span class="red">${newLetter === " " ? "▪" : newLetter}</span>`;
+    display.innerHTML += `<span class="red">${
+      newLetter === " " ? "▪" : newLetter
+    }</span>`;
     errorCount++;
   }
 
@@ -56,6 +65,7 @@ const typeController = (e) => {
     gameOver();
     gameOverStatus = true;
     // count = 3;
+    loadData();
   }
 };
 
@@ -105,14 +115,14 @@ const closeModal = () => {
 };
 
 const start = () => {
-  count = 3
+  count = 3;
   // If already started, do not start again
   if (startTime) return;
 
   countdownOverlay.style.display = "flex";
 
   const startCountdown = setInterval(() => {
-    countdownOverlay.innerHTML = `${count ? `<h1>${count}</h1>` : ''}`;
+    countdownOverlay.innerHTML = `${count ? `<h1>${count}</h1>` : ""}`;
 
     // finished timer
     if (count == 0) {
@@ -124,8 +134,8 @@ const start = () => {
 
       clearInterval(startCountdown);
       startTime = new Date().getTime();
-      
-      typingTime()
+
+      typingTime();
     }
     count--;
   }, 1000);
@@ -138,23 +148,23 @@ startBtn.addEventListener("click", start);
 displayHistory();
 
 // Show typing time spent
-const typingTime = () => { 
-  const typingTime  = setInterval(() => {
-  const currentTime = new Date().getTime();
-  const timeSpent = parseInt((currentTime - startTime) / 1000);
+const typingTime = () => {
+  const typingTime = setInterval(() => {
+    const currentTime = new Date().getTime();
+    const timeSpent = parseInt((currentTime - startTime) / 1000);
 
+    document.getElementById("show-time").innerHTML = `${
+      startTime ? timeSpent : 0
+    } seconds`;
 
-  document.getElementById("show-time").innerHTML = `${startTime ? timeSpent : 0} seconds`;
-
-  if(gameOverStatus) {
-    clearInterval(typingTime)
-    gameOverStatus = false
-  }
-}, 1000);
-}
-
+    if (gameOverStatus) {
+      clearInterval(typingTime);
+      gameOverStatus = false;
+    }
+  }, 1000);
+};
 
 // prevent spacebar scrolling
-window.onkeydown = function(e) { 
+window.onkeydown = function (e) {
   return !(e.keyCode == 32 && e.target == document.body);
-}; 
+};
